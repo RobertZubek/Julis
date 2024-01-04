@@ -72,15 +72,11 @@ void guard(void*){
   
   long time;
   long distance;
+  long distanceLeft;
+  long distanceRight;
   while(1){
-    digitalWrite(triggerPIN, LOW);
-    rtDelay(1);
-    digitalWrite(triggerPIN, HIGH);
-    rtdelay(2);
-    digitalWrite(triggerPIN, LOW);
-
-    time = pulseIn(echoPIN, HIGH);
-    distance=time/29/2; //cm
+    
+    distance=getDistance();
 
     if(distance<=20){
       xSemaphoreTake(binarySemaphore, portMAX_DELAY);
@@ -90,15 +86,45 @@ void guard(void*){
         motor3.setSpeed(speed);
         motor4.setSpeed(speed);
       }
-      motor1.set(RELEASE);
-      motor2.set(RELEASE);
-      motor3.set(RELEASE);
-      motor4.set(RELEASE);
+      motor1.run(RELEASE);
+      motor2.run(RELEASE);
+      motor3.run(RELEASE);
+      motor4.run(RELEASE);
+
+      servo.write(0);
+      distanceLeft=getDistance();
+
+      servo.write(180);
+      distanceRight=getDistance();
+
+      long diff;
+      diff = distanceLeft-distanceRight;
+      if(diff>0&&distanceLeft>=50){
+        turnLeft();
+      }
+      else if(diff<0&&distanceRight>=50){
+        turnRight();
+      }
+      else turn();
+
     }
 
 
   }
+}
 
+long getDistance(void){
+  long distance;
+  digitalWrite(triggerPIN, LOW);
+  rtDelay(1);
+  digitalWrite(triggerPIN, HIGH);
+  rtDelay(2);
+  digitalWrite(triggerPIN, LOW);
+
+  time = pulseIn(echoPIN, HIGH);
+  distance=time/29/2; //cm
+  return distance;
+}
 
 void loop() {}
 
