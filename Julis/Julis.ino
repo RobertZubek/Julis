@@ -25,11 +25,13 @@ AF_DCMotor motor4(motor4PIN); //back right
 int speed;
 
 void setup() {
+
+  Serial.begin(9600);
   
   servo.attach(servoPIN);
 
-  xTaskCreate(run, "run", 128, NULL, 1, NULL);
-  xTaskCreate(guard, "guard", 128, NULL, 1, NULL);
+  xTaskCreate(run, "run", 128, NULL, 0, NULL);
+  xTaskCreate(guard, "guard", 128, NULL, 2, NULL);
 
   binarySemaphore = xSemaphoreCreateBinary();
   xSemaphoreGive(binarySemaphore);
@@ -41,7 +43,7 @@ void setup() {
   motor2.run(FORWARD);
   motor3.run(FORWARD);
   motor4.run(FORWARD);
-  for(speed=0;speed=255;speed++)
+  for(speed=0;speed<=255;speed++)
   {
     motor1.setSpeed(speed);
     motor2.setSpeed(speed);
@@ -76,10 +78,13 @@ void guard(void*){
   while(1){
     
     distance=getDistance();
+    Serial.println(distance);
+    rtDelay(50);
+
 
     if(distance<=20){
       xSemaphoreTake(binarySemaphore, portMAX_DELAY);
-      for(speed=255;speed=0;speed--){
+      for(speed=255;speed>=0;speed--){
         motor1.setSpeed(speed);
         motor2.setSpeed(speed);
         motor3.setSpeed(speed);
@@ -91,23 +96,28 @@ void guard(void*){
       motor4.run(RELEASE);
 
       servo.write(0);
-      distanceLeft=getDistance();
+      distanceRight=getDistance();
+      rtDelay(250);
 
       servo.write(180);
-      distanceRight=getDistance();
+      distanceLeft=getDistance();
+      rtDelay(250);
 
       long diff;
       diff = distanceLeft-distanceRight;
       if(diff>0&&distanceLeft>=50){
         turnLeft();
         xSemaphoreGive(binarySemaphore);
+        servo.write(90);
       }
       else if(diff<0&&distanceRight>=50){
         turnRight();
         xSemaphoreGive(binarySemaphore);
+        servo.write(90);
       }
       else turn();
       xSemaphoreGive(binarySemaphore);
+      servo.write(90);
 
     }
 
@@ -129,7 +139,7 @@ void turn()
   motor3.run(FORWARD);
   motor4.run(BACKWARD);
 
-  rtDelay(500);
+  rtDelay(2000);
 
   motor1.run(RELEASE);
   motor2.run(RELEASE);
@@ -152,7 +162,7 @@ void turnRight()
   motor3.run(FORWARD);
   motor4.run(BACKWARD);
 
-  rtDelay(250);
+  rtDelay(1000);
 
   motor1.run(RELEASE);
   motor2.run(RELEASE);
@@ -175,7 +185,7 @@ void turnLeft()
   motor3.run(BACKWARD);
   motor4.run(FORWARD);
 
-  rtDelay(250);
+  rtDelay(1000);
 
   motor1.run(RELEASE);
   motor2.run(RELEASE);
