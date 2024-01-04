@@ -67,10 +67,19 @@ void run(void*){
 
 
 void guard(void*){
+  
+  long time;
+  long distance;
+  while(1){
+    digitalWrite(triggerPIN, LOW);
+    rtDelay(1);
+    digitalWrite(triggerPIN, HIGH);
+    rtdelay(2);
+    digitalWrite(triggerPIN, LOW);
 
-
-}
-
+    time = pulseIn(echoPIN, HIGH);
+    distance=time/29/2;
+  }
 
 
 void loop() {}
