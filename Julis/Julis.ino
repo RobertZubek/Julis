@@ -139,7 +139,7 @@ void turn()
   motor3.run(FORWARD);
   motor4.run(BACKWARD);
 
-  rtDelay(2000);//
+  rtDelay(2000);
 
   motor1.run(RELEASE);
   motor2.run(RELEASE);
