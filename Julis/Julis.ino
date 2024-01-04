@@ -53,17 +53,19 @@ void run(void*){
 
   speed=255;
 
-  xSemaphoreTake(binarySemaphore, portMAX_DELAY);
-  motor1.setSpeed(speed);
-  motor2.setSpeed(speed);
-  motor3.setSpeed(speed);
-  motor4.setSpeed(speed);
-  motor1.run(FORWARD);
-  motor2.run(FORWARD);
-  motor3.run(FORWARD);
-  motor4.run(FORWARD);
-  xSemaphoreGive(binarySemaphore);
-}
+  while(1){
+    xSemaphoreTake(binarySemaphore, portMAX_DELAY);
+    motor1.setSpeed(speed);
+    motor2.setSpeed(speed);
+    motor3.setSpeed(speed);
+    motor4.setSpeed(speed);
+    motor1.run(FORWARD);
+    motor2.run(FORWARD);
+    motor3.run(FORWARD);
+    motor4.run(FORWARD);
+    xSemaphoreGive(binarySemaphore);
+  }
+  }
 
 
 void guard(void*){
@@ -78,7 +80,23 @@ void guard(void*){
     digitalWrite(triggerPIN, LOW);
 
     time = pulseIn(echoPIN, HIGH);
-    distance=time/29/2;
+    distance=time/29/2; //cm
+
+    if(distance<=20){
+      xSemaphoreTake(binarySemaphore, portMAX_DELAY);
+      for(speed=255;speed=0;speed--){
+        motor1.setSpeed(speed);
+        motor2.setSpeed(speed);
+        motor3.setSpeed(speed);
+        motor4.setSpeed(speed);
+      }
+      motor1.set(RELEASE);
+      motor2.set(RELEASE);
+      motor3.set(RELEASE);
+      motor4.set(RELEASE);
+    }
+
+
   }
 
 
