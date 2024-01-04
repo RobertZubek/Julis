@@ -11,6 +11,8 @@
 #define motor2PIN 2
 #define motor3PIN 3
 #define motor4PIN 4
+#define triggerPIN A5
+#define echoPIN A4
 
 SemaphoreHandle_t binarySemaphore;
 
@@ -25,10 +27,16 @@ int speed;
 void setup() {
   
   servo.attach(servoPIN);
+
   xTaskCreate(run, "run", 128, NULL, 1, NULL);
   xTaskCreate(guard, "guard", 128, NULL, 1, NULL);
+
   binarySemaphore = xSemaphoreCreateBinary();
   xSemaphoreGive(binarySemaphore);
+
+  pinMode(triggerPIN, OUTPUT);
+  pinMode(echoPIN, INPUT);
+
   motor1.run(FORWARD);
   motor2.run(FORWARD);
   motor3.run(FORWARD);
@@ -42,8 +50,14 @@ void setup() {
   }
 }
 void run(void*){
+
   speed=255;
+
   xSemaphoreTake(binarySemaphore, portMAX_DELAY);
+  motor1.setSpeed(speed);
+  motor2.setSpeed(speed);
+  motor3.setSpeed(speed);
+  motor4.setSpeed(speed);
   motor1.run(FORWARD);
   motor2.run(FORWARD);
   motor3.run(FORWARD);
@@ -53,7 +67,7 @@ void run(void*){
 
 
 void guard(void*){
-  
+
 
 }
 
