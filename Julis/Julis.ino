@@ -132,48 +132,61 @@ void guard(void*){
 
 void turn(void*)
 {
-  speed=255;
+  while(1){
+    if(state==3){
+      speed=255;
+      xSemaphoreTake(binarySemaphore, portMAX_DELAY);
 
-  motor1.setSpeed(speed);
-  motor2.setSpeed(speed);
-  motor3.setSpeed(speed);
-  motor4.setSpeed(speed);
+      motor1.setSpeed(speed);
+      motor2.setSpeed(speed);
+      motor3.setSpeed(speed);
+      motor4.setSpeed(speed);
 
-  motor1.run(BACKWARD);
-  motor2.run(FORWARD);
-  motor3.run(FORWARD);
-  motor4.run(BACKWARD);
+      motor1.run(BACKWARD);
+      motor2.run(FORWARD);
+      motor3.run(FORWARD);
+      motor4.run(BACKWARD);
 
-  rtDelay(2000);
+      rtDelay(2000);
 
-  motor1.run(RELEASE);
-  motor2.run(RELEASE);
-  motor3.run(RELEASE);
-  motor4.run(RELEASE);
+      motor1.run(RELEASE);
+      motor2.run(RELEASE);
+      motor3.run(RELEASE);
+      motor4.run(RELEASE);
+      state=0;
 
+      xSemaphoreGive(binarySemaphore);
+    }
+  }
 }
 
 void turnRight(void*)
 {
-  speed=255;
+  while(1){
+    if(state==2){
+      speed=255;
+      xSemaphoreTake(binarySemaphore, portMAX_DELAY);
 
-  motor1.setSpeed(speed);
-  motor2.setSpeed(speed);
-  motor3.setSpeed(speed);
-  motor4.setSpeed(speed);
+      motor1.setSpeed(speed);
+      motor2.setSpeed(speed);
+      motor3.setSpeed(speed);
+      motor4.setSpeed(speed);
 
-  motor1.run(BACKWARD);
-  motor2.run(FORWARD);
-  motor3.run(FORWARD);
-  motor4.run(BACKWARD);
+      motor1.run(BACKWARD);
+      motor2.run(FORWARD);
+      motor3.run(FORWARD);
+      motor4.run(BACKWARD);
 
-  rtDelay(1000);
+      rtDelay(1000);
 
-  motor1.run(RELEASE);
-  motor2.run(RELEASE);
-  motor3.run(RELEASE);
-  motor4.run(RELEASE);
-
+      motor1.run(RELEASE);
+      motor2.run(RELEASE);
+      motor3.run(RELEASE);
+      motor4.run(RELEASE);
+      state=0;
+      xSemaphoreGive(binarySemaphore);
+    }
+  }
 }
 
 void turnLeft(void*)
@@ -181,6 +194,7 @@ void turnLeft(void*)
   while(1){
     if(state==1){
       speed=255;
+      xSemaphoreTake(binarySemaphore, portMAX_DELAY);
 
       motor1.setSpeed(speed);
       motor2.setSpeed(speed);
@@ -199,6 +213,7 @@ void turnLeft(void*)
       motor3.run(RELEASE);
       motor4.run(RELEASE);
       state=0;
+      xSemaphoreGive(binarySemaphore);
     }
   }
 }
