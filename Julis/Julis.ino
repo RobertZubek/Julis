@@ -61,20 +61,20 @@ void run(void*){
   speed=255;
 
   while(1){
-    if(state ==1){
-      xSemaphoreTake(binarySemaphore, portMAX_DELAY);
-      motor1.setSpeed(speed);
-      motor2.setSpeed(speed);
-      motor3.setSpeed(speed);
-      motor4.setSpeed(speed);
-      motor1.run(FORWARD);
-      motor2.run(FORWARD);
-      motor3.run(FORWARD);
-      motor4.run(FORWARD);
-      xSemaphoreGive(binarySemaphore);
-    }
+    
+    xSemaphoreTake(binarySemaphore, portMAX_DELAY);
+    motor1.setSpeed(speed);
+    motor2.setSpeed(speed);
+    motor3.setSpeed(speed);
+    motor4.setSpeed(speed);
+    motor1.run(FORWARD);
+    motor2.run(FORWARD);
+    motor3.run(FORWARD);
+    motor4.run(FORWARD);
+    xSemaphoreGive(binarySemaphore);
+    
   }
-  }
+}
 
 
 void guard(void*){
@@ -113,22 +113,20 @@ void guard(void*){
       long diff;
       diff = distanceLeft-distanceRight;
       if(diff>0&&distanceLeft>=50){
-        turnLeft();
-        xSemaphoreGive(binarySemaphore);
+        state=1; //left
         servo.write(90);
+        rtDelay(1100);
       }
       else if(diff<0&&distanceRight>=50){
-        turnRight();
-        xSemaphoreGive(binarySemaphore);
+        state=2; //right
         servo.write(90);
+        rtDelay(1100);
       }
-      else turn();
+      else {state=3; rtDelay(2100);}//turn
       xSemaphoreGive(binarySemaphore);
       servo.write(90);
 
     }
-
-
   }
 }
 
@@ -180,25 +178,29 @@ void turnRight(void*)
 
 void turnLeft(void*)
 {
-  speed=255;
+  while(1){
+    if(state==1){
+      speed=255;
 
-  motor1.setSpeed(speed);
-  motor2.setSpeed(speed);
-  motor3.setSpeed(speed);
-  motor4.setSpeed(speed);
+      motor1.setSpeed(speed);
+      motor2.setSpeed(speed);
+      motor3.setSpeed(speed);
+      motor4.setSpeed(speed);
 
-  motor1.run(FORWARD);
-  motor2.run(BACKWARD);
-  motor3.run(BACKWARD);
-  motor4.run(FORWARD);
+      motor1.run(FORWARD);
+      motor2.run(BACKWARD);
+      motor3.run(BACKWARD);
+      motor4.run(FORWARD);
 
-  rtDelay(1000);
+      rtDelay(1000);
 
-  motor1.run(RELEASE);
-  motor2.run(RELEASE);
-  motor3.run(RELEASE);
-  motor4.run(RELEASE);
-
+      motor1.run(RELEASE);
+      motor2.run(RELEASE);
+      motor3.run(RELEASE);
+      motor4.run(RELEASE);
+      state=0;
+    }
+  }
 }
 
 long getDistance(void){
