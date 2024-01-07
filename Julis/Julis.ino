@@ -16,6 +16,8 @@
 
 SemaphoreHandle_t binarySemaphore;
 
+int state = 1;
+
 Servo servo;
 AF_DCMotor motor1(motor1PIN); //top right
 AF_DCMotor motor2(motor2PIN); //top left
@@ -32,6 +34,9 @@ void setup() {
 
   xTaskCreate(run, "run", 128, NULL, 0, NULL);
   xTaskCreate(guard, "guard", 128, NULL, 2, NULL);
+  xTaskCreate(turnLeft, "turnLeft", 128, NULL, 1, NULL);
+  xTaskCreate(turnRight, "turnRight", 128, NULL, 1, NULL);
+  xTaskCreate(turn, "turn", 128, NULL, 1, NULL);
 
   binarySemaphore = xSemaphoreCreateBinary();
   xSemaphoreGive(binarySemaphore);
@@ -56,16 +61,18 @@ void run(void*){
   speed=255;
 
   while(1){
-    xSemaphoreTake(binarySemaphore, portMAX_DELAY);
-    motor1.setSpeed(speed);
-    motor2.setSpeed(speed);
-    motor3.setSpeed(speed);
-    motor4.setSpeed(speed);
-    motor1.run(FORWARD);
-    motor2.run(FORWARD);
-    motor3.run(FORWARD);
-    motor4.run(FORWARD);
-    xSemaphoreGive(binarySemaphore);
+    if(state ==1){
+      xSemaphoreTake(binarySemaphore, portMAX_DELAY);
+      motor1.setSpeed(speed);
+      motor2.setSpeed(speed);
+      motor3.setSpeed(speed);
+      motor4.setSpeed(speed);
+      motor1.run(FORWARD);
+      motor2.run(FORWARD);
+      motor3.run(FORWARD);
+      motor4.run(FORWARD);
+      xSemaphoreGive(binarySemaphore);
+    }
   }
   }
 
@@ -125,7 +132,7 @@ void guard(void*){
   }
 }
 
-void turn()
+void turn(void*)
 {
   speed=255;
 
@@ -148,7 +155,7 @@ void turn()
 
 }
 
-void turnRight()
+void turnRight(void*)
 {
   speed=255;
 
@@ -171,7 +178,7 @@ void turnRight()
 
 }
 
-void turnLeft()
+void turnLeft(void*)
 {
   speed=255;
 
