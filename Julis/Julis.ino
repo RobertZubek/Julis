@@ -3,7 +3,6 @@
 #include <AFMotor.h>
 #include <Servo.h>
 
-
 #define rtDelay(v) vTaskDelay(v/15)
 
 #define servoPIN 9
@@ -15,15 +14,13 @@
 #define echoPIN A4
 
 SemaphoreHandle_t binarySemaphore;
-
-int state = 1;
-
 Servo servo;
 AF_DCMotor motor1(motor1PIN); //top right
 AF_DCMotor motor2(motor2PIN); //top left
 AF_DCMotor motor3(motor3PIN); //back left
 AF_DCMotor motor4(motor4PIN); //back right
 
+int state = 1;
 int speed;
 
 void setup() {
@@ -233,9 +230,3 @@ long getDistance(void){
 }
 
 void loop() {}
-
-
-
-
-
-
