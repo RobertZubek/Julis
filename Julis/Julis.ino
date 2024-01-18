@@ -5,7 +5,7 @@
 
 #define rtDelay(v) vTaskDelay(v/15)
 
-#define ledPIN A0
+#define ledPIN 14
 #define servoPIN 9
 #define motor1PIN 1
 #define motor2PIN 2
@@ -40,6 +40,7 @@ void setup() {
   pinMode(triggerPIN, OUTPUT);
   pinMode(echoPIN, INPUT);
   pinMode(ledPIN, OUTPUT);
+  
 
 }
 void run(void*){
@@ -49,10 +50,11 @@ void run(void*){
   while(1){
     Serial.println("RUN");
     speed=255;
-    digitalWrite(ledPIN, HIGH);
+    
     if(state==1){
       xSemaphoreTake(binarySemaphore, portMAX_DELAY);
       Serial.println("RUN GGGGGGGGGG");
+      digitalWrite(ledPIN, HIGH);
       motor1.setSpeed(speed);
       motor2.setSpeed(speed);
       motor3.setSpeed(speed);
@@ -82,11 +84,11 @@ void guard(void*){
     rtDelay(50);
 
 
-    if(distance<=20){
+    if(distance<=40){
       state=2;
       xSemaphoreTake(binarySemaphore, portMAX_DELAY);
       Serial.println("Chuj");
-      digitalWrite(ledPIN, LOW);
+      //digitalWrite(ledPIN, LOW);
       for(speed=255;speed>=0;speed--){
         motor1.setSpeed(speed);
         motor2.setSpeed(speed);
@@ -99,22 +101,22 @@ void guard(void*){
       motor4.run(RELEASE);
 
       servo.write(0);
-      digitalWrite(ledPIN, HIGH);
+      //digitalWrite(ledPIN, HIGH);
       rtDelay(1000);
-      digitalWrite(ledPIN, LOW);
+      //digitalWrite(ledPIN, LOW);
       distanceRight=getDistance();
       rtDelay(250);
 
       servo.write(180);
-      digitalWrite(ledPIN, HIGH);
+      //digitalWrite(ledPIN, HIGH);
       rtDelay(1000);
-      digitalWrite(ledPIN, LOW);
+      //digitalWrite(ledPIN, LOW);
       distanceLeft=getDistance();
       rtDelay(250);
 
       long diff;
       diff = distanceLeft-distanceRight;
-      if(diff>0&&distanceLeft>=50){
+      if(diff>0&&distanceLeft>=70){
         digitalWrite(ledPIN, HIGH);
 
         motor1.setSpeed(speed);
@@ -127,7 +129,7 @@ void guard(void*){
         motor3.run(BACKWARD);
         motor4.run(FORWARD);
 
-        rtDelay(1000);
+        rtDelay(500);
 
         motor1.run(RELEASE);
         motor2.run(RELEASE);
@@ -136,11 +138,11 @@ void guard(void*){
         servo.write(90);
         rtDelay(1100);
       }
-      else if(diff<0&&distanceRight>=50){
+      else if(diff<0&&distanceRight>=70){
         speed=255;
         
 
-        digitalWrite(ledPIN, HIGH);
+        //digitalWrite(ledPIN, HIGH);
 
         motor1.setSpeed(speed);
         motor2.setSpeed(speed);
@@ -152,7 +154,7 @@ void guard(void*){
         motor3.run(FORWARD);
         motor4.run(BACKWARD);
 
-        rtDelay(1000);
+        rtDelay(500);
 
         motor1.run(RELEASE);
         motor2.run(RELEASE);
@@ -162,7 +164,7 @@ void guard(void*){
         rtDelay(1100);
       }
       else {
-        digitalWrite(ledPIN, HIGH);
+        //digitalWrite(ledPIN, HIGH);
 
         motor1.setSpeed(speed);
         motor2.setSpeed(speed);
@@ -174,7 +176,7 @@ void guard(void*){
         motor3.run(FORWARD);
         motor4.run(BACKWARD);
 
-        rtDelay(2000);
+        rtDelay(1000);
         motor1.run(RELEASE);
         motor2.run(RELEASE);
         motor3.run(RELEASE);
