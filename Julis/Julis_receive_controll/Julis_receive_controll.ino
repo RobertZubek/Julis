@@ -9,7 +9,7 @@ void setup() {
 
 void loop() {
   //if (mySwitch.available()) {
-    
+    /*
     Serial.print("Received ");
     Serial.print( mySwitch.getReceivedValue() );
     Serial.print(" / ");
@@ -17,7 +17,7 @@ void loop() {
     Serial.print("bit ");
     Serial.print("Protocol: ");
     Serial.println( mySwitch.getReceivedProtocol() );
-    delay(100);
+    delay(100);*/
 
     //mySwitch.resetAvailable();
   //}
