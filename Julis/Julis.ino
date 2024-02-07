@@ -13,6 +13,8 @@
 #define motor4PIN 4
 #define triggerPIN A5
 #define echoPIN A4
+#define echoPINhelping1 A3
+#define echoPINhelping2 A1
 
 SemaphoreHandle_t binarySemaphore;
 Servo servo;
@@ -39,6 +41,8 @@ void setup() {
 
   pinMode(triggerPIN, OUTPUT);
   pinMode(echoPIN, INPUT);
+  pinMode(echoPINhelping1, INPUT);
+  pinMode(echoPINhelping2, INPUT);
   pinMode(ledPIN, OUTPUT);
   
 
@@ -81,10 +85,13 @@ void guard(void*){
   while(1){
     
     distance=getDistance();
+    distance1=getDistance1();
+    distance2=getDistance2();
+    
     rtDelay(50);
 
 
-    if(distance<=40){
+    if((distance<=40)||(distance1<=40)||(distance2<=40)){
       state=2;
       xSemaphoreTake(binarySemaphore, portMAX_DELAY);
       Serial.println("Chuj");
@@ -300,6 +307,32 @@ long getDistance(void){
   digitalWrite(triggerPIN, LOW);
 
   time = pulseIn(echoPIN, HIGH);
+  distance=time/29/2; //cm
+  return distance;
+}
+long getDistance1(void){
+  long distance;
+  long time;
+  digitalWrite(triggerPIN, LOW);
+  rtDelay(1);
+  digitalWrite(triggerPIN, HIGH);
+  rtDelay(2);
+  digitalWrite(triggerPIN, LOW);
+
+  time = pulseIn(echoPINhelping1, HIGH);
+  distance=time/29/2; //cm
+  return distance;
+}
+long getDistance2(void){
+  long distance;
+  long time;
+  digitalWrite(triggerPIN, LOW);
+  rtDelay(1);
+  digitalWrite(triggerPIN, HIGH);
+  rtDelay(2);
+  digitalWrite(triggerPIN, LOW);
+
+  time = pulseIn(echoPINhelping2, HIGH);
   distance=time/29/2; //cm
   return distance;
 }

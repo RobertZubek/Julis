@@ -26,7 +26,7 @@ void loop() {
   else if (digitalRead(leftPIN) == LOW) {mySwitch.send("000000000000000000000011");}
   else if (digitalRead(rightPIN) == LOW) {mySwitch.send("000000000000000000000100");}
   else {mySwitch.send("000000000000000000000101");}
-  delay(200);
+  delay(600);
 /*
   mySwitch.send("000000000001010100010001");
   delay(500);  

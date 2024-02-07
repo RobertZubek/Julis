@@ -13,6 +13,8 @@ AF_DCMotor motor2(motor2PIN); //top left
 AF_DCMotor motor3(motor3PIN); //back left
 AF_DCMotor motor4(motor4PIN); //back right
 
+
+
 void setup() {
   Serial.begin(9600);
   mySwitch.enableReceive(0);  // Receiver on interrupt 0 => that is pin #2
@@ -20,17 +22,19 @@ void setup() {
 
 void loop() {
   
-  int dir=mySwitch.getReceivedValue();
+  Serial.println(mySwitch.getReceivedValue());
+ 
 
   int speed=255;
-  if(dir==5)
+  if(mySwitch.getReceivedValue()==5)
   {
     motor1.run(RELEASE);
     motor2.run(RELEASE);
     motor3.run(RELEASE);
     motor4.run(RELEASE);
+    
   }
-  else if(dir==1)
+  else if(mySwitch.getReceivedValue()==1)
   {
     motor1.setSpeed(speed);
     motor2.setSpeed(speed);
@@ -40,8 +44,9 @@ void loop() {
     motor2.run(FORWARD);
     motor3.run(FORWARD);
     motor4.run(FORWARD);
+    
   }
-  else if(dir==2)
+  else if(mySwitch.getReceivedValue()==2)
   {
     motor1.setSpeed(speed);
     motor2.setSpeed(speed);
@@ -51,8 +56,9 @@ void loop() {
     motor2.run(BACKWARD);
     motor3.run(BACKWARD);
     motor4.run(BACKWARD);
+    
   }
-  else if(dir==3)
+  else if(mySwitch.getReceivedValue()==3)
   {
     motor1.setSpeed(speed);
     motor2.setSpeed(speed);
@@ -62,8 +68,9 @@ void loop() {
     motor2.run(BACKWARD);
     motor3.run(BACKWARD);
     motor4.run(FORWARD);
+    
   }
-  else if(dir==4)
+  else if(mySwitch.getReceivedValue()==4)
   {
     motor1.setSpeed(speed);
     motor2.setSpeed(speed);
@@ -73,6 +80,7 @@ void loop() {
     motor2.run(FORWARD);
     motor3.run(FORWARD);
     motor4.run(BACKWARD);
+    
   }
   else
   {
@@ -80,5 +88,6 @@ void loop() {
     motor2.run(RELEASE);
     motor3.run(RELEASE);
     motor4.run(RELEASE);
+    
   }
 }
