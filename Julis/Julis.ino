@@ -80,6 +80,8 @@ void run(void*){
 void guard(void*){
   
   long distance;
+  long distance1;
+  long distance2;
   long distanceLeft;
   long distanceRight;
   while(1){
@@ -91,7 +93,7 @@ void guard(void*){
     rtDelay(50);
 
 
-    if((distance<=40)||(distance1<=40)||(distance2<=40)){
+    if((distance<=40)||(distance1<=15)||(distance2<=15)){
       state=2;
       xSemaphoreTake(binarySemaphore, portMAX_DELAY);
       Serial.println("Chuj");
